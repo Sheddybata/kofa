@@ -1,135 +1,172 @@
-# KofaSentinel - Advanced Security Management System
+# KofaSentinel ATLAS
 
-A comprehensive vehicle entry management and security system with an enhanced admin portal featuring predictive analytics and blacklist management.
+A modern, profile-based access control system built with React, TypeScript, and Tailwind CSS. KofaSentinel ATLAS provides comprehensive visitor and vehicle management for secure facilities.
 
-## Features
+## 🚀 Features
 
-### 🚗 Vehicle Entry Management
-- Real-time vehicle entry logging
-- Driver and purpose tracking
-- Timestamp recording for all entries
+### **Profile-Based System**
+- **Individual Profiles**: Manage people with contact information, photos, and notes
+- **Vehicle Profiles**: Track vehicles with driver information and plate numbers
+- **Linked Profiles**: Connect vehicles to individuals for comprehensive tracking
 
-### 🔒 Enhanced Admin Portal
-- **Professional Dashboard**: Modern, responsive design with gradient backgrounds and interactive elements
-- **Comprehensive Analytics**: Multi-timeframe analysis (24h, 7d, 30d)
-- **Predictive Analysis**: AI-powered predictions for peak hours and quiet periods
-- **Interactive Charts**: Visual representation of traffic patterns and trends
+### **Guard Interface** (`/gate`)
+- **Unified Search**: Search by name, phone number, or plate number
+- **Quick Registration**: Register new profiles on-the-fly
+- **Instant Logging**: Log entries with purpose and notes
+- **Real-time Activity**: View recent access activity
 
-### 🚫 Advanced Blacklist Management
-- **Add/Remove Vehicles**: Dynamic blacklist management with reason tracking
-- **Status Management**: Active and suspended blacklist states
-- **Security Tracking**: Monitor flagged entries and security violations
-- **Audit Trail**: Complete history of blacklist changes
+### **Admin Dashboard** (`/dashboard`)
+- **Access Management**: Monitor all entries and exits
+- **Profile Management**: View, edit, and manage all profiles
+- **Security Features**: Blacklist management and security alerts
+- **Data Export**: Export access logs and reports
 
-### 📊 Predictive Analytics
-- **Peak Hour Prediction**: Forecast busy periods for staffing optimization
-- **Quiet Period Analysis**: Identify optimal maintenance windows
-- **Weekly Patterns**: Day-of-week traffic analysis
-- **Smart Recommendations**: AI-powered suggestions for operations
+### **Security Features**
+- **Blacklist Management**: Flag restricted individuals/vehicles
+- **Access Logs**: Complete audit trail of all entries
+- **Real-time Monitoring**: Live updates of facility access
+- **Data Persistence**: Local storage for offline functionality
 
-### 🎨 Modern UI/UX
-- **Responsive Design**: Works seamlessly on all device sizes
-- **Interactive Elements**: Hover effects, smooth transitions, and animations
-- **Professional Styling**: Clean, modern interface with consistent design language
-- **Accessibility**: High contrast and clear visual hierarchy
-
-## Technology Stack
+## 🛠️ Technology Stack
 
 - **Frontend**: React 18 + TypeScript
-- **Styling**: Tailwind CSS with custom gradients
-- **Charts**: Custom SVG-based visualizations
-- **State Management**: React Hooks
-- **Routing**: React Router v6
+- **UI Components**: Shadcn/ui + Tailwind CSS
+- **State Management**: React Context API
+- **Build Tool**: Vite
+- **Icons**: Lucide React
+- **Storage**: Local Storage (easily replaceable with backend)
 
-## Getting Started
+## 📦 Installation
 
-1. **Install Dependencies**
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/Sheddybata/kofa.git
+   cd kofa
+   ```
+
+2. **Install dependencies**
    ```bash
    npm install
    ```
 
-2. **Start Development Server**
+3. **Start development server**
    ```bash
    npm run dev
    ```
 
-3. **Access the Application**
-   - Open your browser to `http://localhost:5173`
-   - Login as Admin to access the enhanced dashboard
-   - Login as Guard to manage vehicle entries
+4. **Open in browser**
+   ```
+   http://localhost:8080
+   ```
 
-## Admin Portal Features
+## 🎯 Usage
 
-### Dashboard Overview
-- Real-time statistics and metrics
-- Recent vehicle entries with detailed information
-- Export and print functionality
-- Professional header with user information
+### **For Guards**
+1. Navigate to `/gate`
+2. Search for existing profiles or register new ones
+3. Log entries with purpose and notes
+4. Monitor recent activity
 
-### Analytics Tab
-- **Time Range Selection**: 24 hours, 7 days, or 30 days
-- **Hourly Traffic Charts**: Visual representation of traffic patterns
-- **Peak Hours Analysis**: Top 5 busiest hours with rankings
-- **Quiet Hours Identification**: Low-activity periods for maintenance
-- **Weekly Patterns**: Day-of-week traffic analysis
+### **For Administrators**
+1. Navigate to `/dashboard`
+2. View comprehensive access logs
+3. Manage profiles and blacklist
+4. Export data and generate reports
 
-### Security Tab
-- **Blacklist Management**: Add, remove, and modify blacklisted vehicles
-- **Status Control**: Active and suspended blacklist states
-- **Recent Flagged Entries**: Monitor security violations
-- **Security Statistics**: Comprehensive overview of security status
+## 📱 Responsive Design
 
-### Reports Tab
-- **Monthly Summary Generation**: Comprehensive reporting
-- **Security Audit Tools**: Review security logs and activities
-- **Export Functionality**: Generate reports for external use
+- **Mobile-First**: Optimized for tablet and mobile use
+- **Touch-Friendly**: Large buttons and intuitive gestures
+- **Professional UI**: Clean, modern interface design
 
-## Predictive Analysis Features
+## 🔧 Configuration
 
-### Peak Hour Prediction
-- **Historical Pattern Analysis**: Based on entry data patterns
-- **Confidence Scoring**: High, medium, and low confidence predictions
-- **Staffing Recommendations**: Optimal staffing times
+### **Environment Setup**
+- No environment variables required for basic functionality
+- Local storage handles data persistence
+- Easy integration with backend APIs
 
-### Quiet Period Analysis
-- **Consecutive Low-Activity Detection**: Find maintenance windows
-- **Duration Calculation**: Length of quiet periods
-- **Operational Recommendations**: Best times for maintenance
+### **Customization**
+- Modify `src/types/index.ts` for data structure changes
+- Update `src/contexts/AppContext.tsx` for business logic
+- Customize UI components in `src/components/`
 
-### Smart Recommendations
-- **Staffing Optimization**: When to increase security personnel
-- **Maintenance Scheduling**: Optimal times for system maintenance
-- **Resource Planning**: Data-driven operational decisions
+## 📊 Data Structure
 
-## Security Features
+### **Profile Types**
+```typescript
+interface Profile {
+  profileId: string;
+  profileType: 'Individual' | 'Vehicle';
+  name: string;
+  identifier: string; // Phone for individuals, Plate for vehicles
+  photoUrl?: string;
+  notes?: string;
+  isBlacklisted: boolean;
+  // Additional fields for individuals
+  email?: string;
+  company?: string;
+  // Additional fields for vehicles
+  driverName?: string;
+  driverPhone?: string;
+}
+```
 
-### Blacklist Management
-- **Dynamic Addition**: Add vehicles with reasons and status
-- **Flexible Status**: Active (blocked) and suspended states
-- **Reason Tracking**: Document security violations
-- **Audit Trail**: Complete history of changes
+### **Access Logs**
+```typescript
+interface AccessLog {
+  logId: string;
+  profileId: string;
+  entryTime: string;
+  exitTime?: string;
+  status: 'Inside' | 'Exited';
+  purpose?: string;
+  guardNotes?: string;
+}
+```
 
-### Security Monitoring
-- **Real-time Flagging**: Immediate identification of blacklisted vehicles
-- **Violation Tracking**: Monitor security incidents
-- **Statistics Dashboard**: Comprehensive security metrics
+## 🚀 Deployment
 
-## Contributing
+### **Build for Production**
+```bash
+npm run build
+```
+
+### **Preview Production Build**
+```bash
+npm run preview
+```
+
+### **Deploy to Vercel/Netlify**
+1. Connect your GitHub repository
+2. Set build command: `npm run build`
+3. Set output directory: `dist`
+4. Deploy!
+
+## 🤝 Contributing
 
 1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Test thoroughly
-5. Submit a pull request
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
-## License
+## 📄 License
 
-This project is licensed under the MIT License.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## Support
+## 👨‍💻 Author
 
-For support and questions, please open an issue in the GitHub repository.
+**Sheddybata**
+- GitHub: [@Sheddybata](https://github.com/Sheddybata)
+- Repository: [https://github.com/Sheddybata/kofa](https://github.com/Sheddybata/kofa)
+
+## 🙏 Acknowledgments
+
+- Built with [Shadcn/ui](https://ui.shadcn.com/) components
+- Styled with [Tailwind CSS](https://tailwindcss.com/)
+- Icons by [Lucide](https://lucide.dev/)
 
 ---
 
-**KofaSentinel** - Advanced security management for the modern world.
+**KofaSentinel ATLAS** - Secure, Modern, Professional Access Control
