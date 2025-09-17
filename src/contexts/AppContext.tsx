@@ -31,6 +31,7 @@ interface AppContextType {
   logExit: (logId: string) => Promise<ApiResponse<AccessLog>>;
   addAccessLog: (log: AccessLog) => void;
   clearAllAccessLogs: () => void;
+  syncData: () => void;
   getAccessLogsWithProfiles: () => AccessLogWithProfile[];
   getProfilesWithLogs: () => ProfileWithLogs[];
   
@@ -85,62 +86,91 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   // Load data from localStorage on mount
   useEffect(() => {
-    const savedProfiles = localStorage.getItem('kofasentinel-profiles');
-    const savedLogs = localStorage.getItem('kofasentinel-access-logs');
-    
-    if (savedProfiles) {
-      try {
-        setProfiles(JSON.parse(savedProfiles));
-      } catch (error) {
-        console.error('Error loading profiles:', error);
-      }
-    } else {
-      // Initialize with sample data if no saved data exists
-      const sampleProfiles: Profile[] = [
-        {
-          profileId: uuidv4(),
-          profileType: 'Individual',
-          name: 'John Doe',
-          identifier: '08123456789',
-          photoUrl: '',
-          notes: 'Regular visitor',
-          isBlacklisted: false,
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
-        },
-        {
-          profileId: uuidv4(),
-          profileType: 'Vehicle',
-          name: 'Toyota Camry',
-          identifier: 'ABC-123',
-          photoUrl: '',
-          notes: 'Staff vehicle',
-          isBlacklisted: false,
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
-        },
-        {
-          profileId: uuidv4(),
-          profileType: 'Vehicle',
-          name: 'Honda Accord',
-          identifier: 'XYZ-789',
-          photoUrl: '',
-          notes: 'Visitor vehicle',
-          isBlacklisted: false,
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
+    const loadData = () => {
+      const savedProfiles = localStorage.getItem('kofasentinel-profiles');
+      const savedLogs = localStorage.getItem('kofasentinel-access-logs');
+      
+      if (savedProfiles) {
+        try {
+          setProfiles(JSON.parse(savedProfiles));
+        } catch (error) {
+          console.error('Error loading profiles:', error);
         }
-      ];
-      setProfiles(sampleProfiles);
-    }
-    
-    if (savedLogs) {
-      try {
-        setAccessLogs(JSON.parse(savedLogs));
-      } catch (error) {
-        console.error('Error loading access logs:', error);
+      } else {
+        // Initialize with sample data if no saved data exists
+        const sampleProfiles: Profile[] = [
+          {
+            profileId: uuidv4(),
+            profileType: 'Individual',
+            name: 'John Doe',
+            identifier: '08123456789',
+            photoUrl: '',
+            notes: 'Regular visitor',
+            isBlacklisted: false,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+          },
+          {
+            profileId: uuidv4(),
+            profileType: 'Vehicle',
+            name: 'Toyota Camry',
+            identifier: 'ABC-123',
+            photoUrl: '',
+            notes: 'Staff vehicle',
+            isBlacklisted: false,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+          },
+          {
+            profileId: uuidv4(),
+            profileType: 'Vehicle',
+            name: 'Honda Accord',
+            identifier: 'XYZ-789',
+            photoUrl: '',
+            notes: 'Visitor vehicle',
+            isBlacklisted: false,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+          }
+        ];
+        setProfiles(sampleProfiles);
       }
-    }
+      
+      if (savedLogs) {
+        try {
+          setAccessLogs(JSON.parse(savedLogs));
+        } catch (error) {
+          console.error('Error loading access logs:', error);
+        }
+      }
+    };
+
+    loadData();
+
+    // Listen for storage changes from other tabs/devices
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'kofasentinel-profiles' && e.newValue) {
+        try {
+          setProfiles(JSON.parse(e.newValue));
+        } catch (error) {
+          console.error('Error syncing profiles:', error);
+        }
+      }
+      if (e.key === 'kofasentinel-access-logs' && e.newValue) {
+        try {
+          setAccessLogs(JSON.parse(e.newValue));
+        } catch (error) {
+          console.error('Error syncing access logs:', error);
+        }
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+
+    // Cleanup
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+    };
   }, []);
 
   // Save data to localStorage whenever it changes
@@ -375,6 +405,33 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     });
   };
 
+  const syncData = (): void => {
+    console.log('Syncing data from localStorage');
+    const savedProfiles = localStorage.getItem('kofasentinel-profiles');
+    const savedLogs = localStorage.getItem('kofasentinel-access-logs');
+    
+    if (savedProfiles) {
+      try {
+        setProfiles(JSON.parse(savedProfiles));
+      } catch (error) {
+        console.error('Error syncing profiles:', error);
+      }
+    }
+    
+    if (savedLogs) {
+      try {
+        setAccessLogs(JSON.parse(savedLogs));
+      } catch (error) {
+        console.error('Error syncing access logs:', error);
+      }
+    }
+    
+    toast({
+      title: "Data Synced",
+      description: "Data has been synchronized from storage.",
+    });
+  };
+
   const logExit = async (logId: string): Promise<ApiResponse<AccessLog>> => {
     setIsLoading(true);
     try {
@@ -521,6 +578,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         logExit,
         addAccessLog,
         clearAllAccessLogs,
+        syncData,
         getAccessLogsWithProfiles,
         getProfilesWithLogs,
         getDashboardStats,

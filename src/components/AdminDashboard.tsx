@@ -23,7 +23,8 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout }) => {
     searchProfiles,
     toggleBlacklist,
     logExit,
-    clearAllAccessLogs
+    clearAllAccessLogs,
+    syncData
   } = useAppContext();
   
   const [activeTab, setActiveTab] = useState('overview');
@@ -92,12 +93,20 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout }) => {
                 <p className="text-lg text-blue-600 font-medium">Profile-Based Access Control Management</p>
               </div>
             </div>
-            <div className="flex items-center space-x-6">
+            <div className="flex items-center space-x-4">
               <div className="text-right bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-4 border border-blue-100">
                 <p className="text-sm text-gray-600 font-medium">Welcome back, Admin</p>
                 <p className="text-lg text-gray-800 font-bold">{new Date().toLocaleDateString()}</p>
                 <p className="text-xs text-blue-600 font-semibold">{new Date().toLocaleTimeString()}</p>
               </div>
+              <Button
+                onClick={syncData}
+                variant="outline"
+                className="flex items-center gap-2 px-4 py-3 border-blue-200 text-blue-600 hover:bg-blue-50 hover:border-blue-300 transition-all duration-200 font-semibold"
+              >
+                <Search className="w-4 h-4" />
+                Sync Data
+              </Button>
               <Button
                 onClick={onLogout}
                 variant="outline"
